@@ -9,8 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
-
 import javax.validation.Valid;
 
 @Controller
@@ -32,7 +30,7 @@ public class LoginController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByName(auth.getName());
         modelAndView.addObject("user", user);
-//        modelAndView.addObject("userName", "Welcome " + user.getUsername() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+        modelAndView.addObject("userName", "Welcome " + user.getUsername() + " " + user.getLastName() + " (" + user.getEmail() + ")");
         modelAndView.setViewName("userhome");
         return modelAndView;
     }
@@ -75,7 +73,7 @@ public class LoginController {
         modelAndView.addObject(user);
         modelAndView.addObject("adminMessage","Content Available Only for Users with Admin Role");
         modelAndView.addObject("users", userService.getAllUsers());
-        modelAndView.setViewName("admin/adminhome");
+        modelAndView.setViewName("adminhome");
         return modelAndView;
     }
 
@@ -113,6 +111,4 @@ public class LoginController {
         userService.addNewUser(user);
         return "redirect: admin/adminhome";
     }
-
-
 }

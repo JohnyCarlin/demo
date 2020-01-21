@@ -1,18 +1,18 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
 @Transactional
 public class UserRepositoryImpl implements UserRepository {
 
-    @Autowired
+    @PersistenceContext
     private EntityManager entityManager;
 
     @Override
@@ -42,6 +42,6 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getUserByName(String name) {
-        return entityManager.createQuery(name, User.class).getSingleResult();
+        return entityManager.createQuery("Select u from " + User.class.getSimpleName() + " u where u.name = :name", User.class).setParameter("name", name).getSingleResult();
     }
 }

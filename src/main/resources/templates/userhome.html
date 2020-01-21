@@ -12,6 +12,12 @@
 <p>
     Welcome <span th:text="${user.getUsername()}">User</span>
 </p>
+
+<td th:each="role : ${user.getAuthorities()}">
+    <p>
+        Your roles:<span th:text="${role.getAuthority()}"></span>
+    </p>
+</td>
 <p>
     <a th:href="@{/logout}">Logout</a>
 </p>
