@@ -1,20 +1,22 @@
 package com.example.demo.service;
 
+import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
+@Transactional
 @Service("userService")
 public class UserServiceImpl implements UserService, UserDetailsService {
 
@@ -39,9 +41,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User getUserByID(Long id) {
-        User user = userRepository.getUserByID(id);
-        user.setRoles(roleRepository.findById(id));
-        return user;
+        return userRepository.getUserByID(id);
     }
 
     @Override
@@ -56,20 +56,31 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void editExistingUser(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        if (user.getPassword().compareTo(userRepository.getUserByName(user.getName()).getPassword()) != 0) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }
+        List<Role> newRoles = new ArrayList<>();
+        for (Role role : user.getRoles()) {
+            newRoles.add(roleRepository.findByName(role.getAuthority()));
+        }
+        user.setRoles(newRoles);
         userRepository.editExistingUser(user);
     }
 
     @Override
     public void addNewUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        List<Role> newRoles = new ArrayList<>();
+        for (Role role : user.getRoles()) {
+            System.out.println("Enhancing Role: " + role.getAuthority());
+            newRoles.add(roleRepository.findByName(role.getAuthority()));
+        }
+        user.setRoles(newRoles);
         userRepository.addNewUser(user);
     }
 
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        User user = userRepository.getUserByName(name);
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
+        return userRepository.getUserByName(name);
     }
 }

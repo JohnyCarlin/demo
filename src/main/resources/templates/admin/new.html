@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <meta charset="UTF-8">
+    <title>New User</title>
+</head>
+<body>
+<form action="#" th:action="@{/admin/insert}" th:object="${user}" method="post">
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>First Name: </th>
+            <td>
+                <input type="text" th:field="*{name}" size="45"/>
+            </td>
+        </tr>
+        <tr>
+            <th>Last Name: </th>
+            <td>
+                <input type="text" th:field="*{lastName}" size="15"/>
+            </td>
+        </tr>
+        <tr>
+            <th>Password: </th>
+            <td>
+                <input type="text" th:field="*{password}" size="45"/>
+            </td>
+        </tr>
+        <tr>
+            <th>User Email: </th>
+            <td>
+                <input type="text" th:field="*{email}" size="45"/>
+            </td>
+        </tr>
+
+        <tr>
+            <th>Role: </th>
+            <td>
+                <input type="checkbox" name="role_user" th:value="true" th:attr="value=true">USER<br>
+                <input type="checkbox" name="role_admin" th:value="true" th:attr="value=true">ADMIN<br>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <input type="submit" value="Save" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+
+</body>
+</html>

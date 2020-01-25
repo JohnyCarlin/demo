@@ -2,7 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
       layout:decorator="layout">
 <head>
     <title>User Home</title>
@@ -15,15 +14,11 @@
 
 <td th:each="role : ${user.getAuthorities()}">
     <p>
-        Your roles:<span th:text="${role.getAuthority()}"></span>
+        Your role:<span th:text="${role.getAuthority()}"></span>
     </p>
 </td>
 <p>
     <a th:href="@{/logout}">Logout</a>
-</p>
-
-<p>
-    <a th:href="@{/admin/adminhome}">Admin Home</a>
 </p>
 
 </body>

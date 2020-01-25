@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit User</title>
+</head>
+<body>
+
+<form action="#" th:action="@{/admin/update}" th:object="${user}" method="post">
+    <table border="1" cellpadding="5">
+        <input type="hidden" th:field="*{id}">
+        <tr>
+            <th>First Name: </th>
+            <td>
+                <input type="text" th:field="*{name}" th:value="*{getUsername()}" />
+            </td>
+        </tr>
+        <tr>
+            <th>Last Name: </th>
+            <td>
+                <input type="text" th:field="*{lastName}" th:value="*{getLastName()}"/>
+            </td>
+        </tr>
+        <tr>
+            <th>User Email: </th>
+            <td>
+                <input type="text" th:field="*{email}" th:value="*{getEmail()}"/>
+            </td>
+        </tr>
+        <tr>
+        <th>Password: </th>
+        <td>
+            <input type="text" name="password" th:value="*{getPassword()}"/>
+        </td>
+        <tr>
+        <th>Role: </th>
+        <td>
+            <input type="checkbox" name="role_user" th:value="true">USER<br>
+            <input type="checkbox" name="role_admin" th:value="true">ADMIN<br>
+        </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <input type="submit" value="Save" />
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

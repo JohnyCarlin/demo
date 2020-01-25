@@ -1,114 +1,116 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import javax.validation.Valid;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class LoginController {
 
-    @Autowired
     private UserService userService;
 
-    @RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
-    public ModelAndView login(){
-        ModelAndView modelAndView = new ModelAndView();
+    @Autowired
+    public LoginController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @RequestMapping(value = {"/", "/login"}, method = RequestMethod.GET)
+    public ModelAndView login(ModelAndView modelAndView) {
         modelAndView.setViewName("login");
         return modelAndView;
     }
 
-    @RequestMapping(value={"/home", "/userhome"}, method = RequestMethod.GET)
-    public ModelAndView userhome(){
-        ModelAndView modelAndView = new ModelAndView();
+    @RequestMapping(value = {"/home"}, method = RequestMethod.GET)
+    public String home() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByName(auth.getName());
+        for (GrantedAuthority authority : user.getAuthorities()) {
+            if (authority.getAuthority().contains("ADMIN")) {
+                return "redirect:admin/adminhome";
+            }
+        }
+        return "redirect:userhome";
+    }
+
+    @RequestMapping(value = {"/userhome"}, method = RequestMethod.GET)
+    public ModelAndView userhome(ModelAndView modelAndView) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByName(auth.getName());
         modelAndView.addObject("user", user);
-        modelAndView.addObject("userName", "Welcome " + user.getUsername() + " " + user.getLastName() + " (" + user.getEmail() + ")");
         modelAndView.setViewName("userhome");
         return modelAndView;
     }
 
-    @RequestMapping(value="/registration", method = RequestMethod.GET)
-    public ModelAndView registration(){
-        ModelAndView modelAndView = new ModelAndView();
-        User user = new User();
-        modelAndView.addObject("user", user);
-        modelAndView.setViewName("registration");
-        return modelAndView;
-    }
 
-    @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
-        ModelAndView modelAndView = new ModelAndView();
-        User userExists = userService.findUserByName(user.getName());
-        if (userExists != null) {
-            bindingResult
-                    .rejectValue("email", "error.user",
-                            "There is already a user registered with the email provided");
-        }
-        if (bindingResult.hasErrors()) {
-            modelAndView.setViewName("registration");
-        } else {
-            userService.addNewUser(user);
-            modelAndView.addObject("successMessage", "User has been registered successfully");
-            modelAndView.addObject("user", new User());
-            modelAndView.setViewName("registration");
-
-        }
-        return modelAndView;
-    }
-
-    @RequestMapping(value="/admin/adminhome", method = RequestMethod.GET)
-    public ModelAndView adminhome(){
-        ModelAndView modelAndView = new ModelAndView();
+    @RequestMapping(value = "/admin/adminhome", method = RequestMethod.GET)
+    public ModelAndView adminhome(ModelAndView modelAndView) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByName(auth.getName());
-        modelAndView.addObject(user);
-        modelAndView.addObject("adminMessage","Content Available Only for Users with Admin Role");
+        modelAndView.addObject("user", user);
         modelAndView.addObject("users", userService.getAllUsers());
-        modelAndView.setViewName("adminhome");
+        modelAndView.setViewName("admin/adminhome");
         return modelAndView;
     }
 
-    @RequestMapping(value="/admin/new", method = RequestMethod.GET)
-    public ModelAndView getNew() {
-        ModelAndView modelAndView = new ModelAndView();
+    @RequestMapping(value = "/admin/new", method = RequestMethod.GET)
+    public ModelAndView getNew(ModelAndView modelAndView) {
+        User user = new User();
+        modelAndView.addObject(user);
         modelAndView.setViewName("admin/new");
         return modelAndView;
     }
 
-    @RequestMapping(value="/admin/edit", method = RequestMethod.GET)
-    public ModelAndView getEdit(@ModelAttribute("id") Long id){
-        ModelAndView modelAndView = new ModelAndView();
+    @RequestMapping(value = "/admin/edit", method = RequestMethod.GET)
+    public ModelAndView getEdit(@ModelAttribute("id") Long id, ModelAndView modelAndView) {
         User user = userService.getUserByID(id);
         modelAndView.addObject(user);
-        modelAndView.setViewName("admin/new");
+        modelAndView.setViewName("admin/edit");
         return modelAndView;
     }
 
-    @RequestMapping(value="/admin/delete", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/delete", method = RequestMethod.GET)
     public String getDelete(@ModelAttribute("id") Long id) {
         userService.removeUser(id);
-        return "redirect: adminhome";
+        return "redirect:adminhome";
     }
 
     @RequestMapping(value = "/admin/update", method = RequestMethod.POST)
-    public String updateUser(@ModelAttribute("user") User user) {
+    public String updateUser(@ModelAttribute("user") User user, @ModelAttribute("role_user") String role_user, @ModelAttribute("role_admin") String role_admin) {
+        List<Role> roles = new ArrayList<>();
+        if (!role_user.isEmpty()) {
+            roles.add(new Role("USER"));
+        }
+        if (!role_admin.isEmpty()) {
+            roles.add(new Role("ADMIN"));
+        }
+        user.setRoles(roles);
         userService.editExistingUser(user);
-        return "redirect: admin/adminhome";
+        return "redirect:adminhome";
     }
 
     @RequestMapping(value = "/admin/insert", method = RequestMethod.POST)
-    public String insertUser(@ModelAttribute("user") User user){
-        System.out.println(user);
+    public String insertUser(@ModelAttribute("user") User user, @ModelAttribute("role_user") String role_user, @ModelAttribute("role_admin") String role_admin) {
+        List<Role> roles = new ArrayList<>();
+        if (!role_user.isEmpty()) {
+            roles.add(new Role("USER"));
+        }
+        if (!role_admin.isEmpty()) {
+            roles.add(new Role("ADMIN"));
+        }
+        user.setRoles(roles);
         userService.addNewUser(user);
-        return "redirect: admin/adminhome";
+        return "redirect:adminhome";
     }
 }

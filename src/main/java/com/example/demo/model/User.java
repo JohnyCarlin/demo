@@ -3,14 +3,10 @@ package com.example.demo.model;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-
 
 @Entity
 @Table(name = "user")
@@ -26,7 +22,7 @@ public class User implements UserDetails {
     private String email;
     @Column(name = "password")
     @Length(min = 5, message = "*Your password must have at least 5 characters")
-    @NotEmpty(message = "*Please provide your password")
+//    @NotEmpty(message = "*Please provide your password")
     private String password;
     @Column(name = "name")
     @NotEmpty(message = "*Please provide your name")
@@ -35,12 +31,12 @@ public class User implements UserDetails {
     @NotEmpty(message = "*Please provide your last name")
     private String lastName;
     @Column(name = "active")
-    private int active;
-    @ManyToMany(cascade = CascadeType.ALL)
+    private boolean active;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles;
 
-    public User(@Email(message = "*Please provide a valid Email") @NotEmpty(message = "*Please provide an email") String email, @Length(min = 5, message = "*Your password must have at least 5 characters") @NotEmpty(message = "*Please provide your password") String password, @NotEmpty(message = "*Please provide your name") String name, @NotEmpty(message = "*Please provide your last name") String lastName, int active, List<Role> roles) {
+    public User(@Email(message = "*Please provide a valid Email") @NotEmpty(message = "*Please provide an email") String email, @Length(min = 5, message = "*Your password must have at least 5 characters") @NotEmpty(message = "*Please provide your password") String password, @NotEmpty(message = "*Please provide your name") String name, @NotEmpty(message = "*Please provide your last name") String lastName, boolean active, List<Role> roles) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -100,11 +96,11 @@ public class User implements UserDetails {
         this.lastName = lastName;
     }
 
-    public int getActive() {
+    public boolean isActive() {
         return active;
     }
 
-    public void setActive(int active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 
@@ -138,7 +134,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
 }

@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
@@ -27,31 +26,36 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private DataSource dataSource;
-
-    @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
+//    @Autowired
+//    public SecurityConfiguration(UserDetailsService userDetailsService) {
+//        this.userDetailsService = userDetailsService;
+//    }
+//
+//    public SecurityConfiguration(boolean disableDefaults) {
+//        super(disableDefaults);
+//    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http.
                 authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/registration").permitAll()
-                .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN").anyRequest()
+                .antMatchers("/").anonymous()
+                .antMatchers("/login").anonymous()
+                .antMatchers("/userhome").hasAuthority("USER")
+                .antMatchers("/admin/**").hasAuthority("ADMIN").anyRequest()
                 .authenticated().and().csrf().disable().formLogin()
                 .loginPage("/login").failureUrl("/login?error=true")
                 .defaultSuccessUrl("/home")
-                .usernameParameter("email")
+                .usernameParameter("name")
                 .passwordParameter("password")
                 .and().logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/").and().exceptionHandling()
-                .accessDeniedPage("/access-denied");
+                .accessDeniedPage("/home");
     }
 
     @Override

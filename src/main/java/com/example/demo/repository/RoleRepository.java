@@ -5,7 +5,8 @@ import com.example.demo.model.Role;
 import java.util.List;
 
 public interface RoleRepository {
-//    Role findByEmail(String email);
-    List<Role> findById(long id);
+
+    Role findById(long id);
+    Role findByName(String name);
 }
 

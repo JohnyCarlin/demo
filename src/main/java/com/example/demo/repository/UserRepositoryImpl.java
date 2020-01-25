@@ -2,14 +2,11 @@ package com.example.demo.repository;
 
 import com.example.demo.model.User;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
-@Transactional
 public class UserRepositoryImpl implements UserRepository {
 
     @PersistenceContext
@@ -22,7 +19,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List getAllUsers() {
-        return entityManager.createQuery("Select t from " + User.class + " t").getResultList();
+        return entityManager.createQuery("Select t from User t").getResultList();
     }
 
     @Override
@@ -42,6 +39,6 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getUserByName(String name) {
-        return entityManager.createQuery("Select u from " + User.class.getSimpleName() + " u where u.name = :name", User.class).setParameter("name", name).getSingleResult();
+        return entityManager.createQuery("Select u from User u where u.name = :name", User.class).setParameter("name", name).getSingleResult();
     }
 }
