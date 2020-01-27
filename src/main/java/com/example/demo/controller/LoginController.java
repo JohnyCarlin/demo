@@ -1,5 +1,4 @@
 package com.example.demo.controller;
-
 import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +19,6 @@ public class LoginController {
 
     private UserService userService;
 
-    @Autowired
     public LoginController(UserService userService) {
         this.userService = userService;
     }
@@ -52,7 +49,6 @@ public class LoginController {
         modelAndView.setViewName("userhome");
         return modelAndView;
     }
-
 
     @RequestMapping(value = "/admin/adminhome", method = RequestMethod.GET)
     public ModelAndView adminhome(ModelAndView modelAndView) {

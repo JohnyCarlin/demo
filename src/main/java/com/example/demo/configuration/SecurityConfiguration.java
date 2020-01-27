@@ -34,7 +34,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //    public SecurityConfiguration(UserDetailsService userDetailsService) {
 //        this.userDetailsService = userDetailsService;
 //    }
-//
+
 //    public SecurityConfiguration(boolean disableDefaults) {
 //        super(disableDefaults);
 //    }
