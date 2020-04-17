@@ -53,8 +53,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void editExistingUser(User user) {
-        if (user.getPassword().compareTo(userRepository.getUserByID(user.getId()).getPassword()) != 0) {
+        if (!user.getPassword().equals("")) {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        } else {
+            user.setPassword(userRepository.getUserByID(user.getId()).getPassword());
         }
         List<Role> newRoles = new ArrayList<>();
         for (Role role : user.getRoles()) {

@@ -1,5 +1,4 @@
 package com.example.demo.configuration;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,15 +28,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
-
-//    @Autowired
-//    public SecurityConfiguration(UserDetailsService userDetailsService) {
-//        this.userDetailsService = userDetailsService;
-//    }
-
-//    public SecurityConfiguration(boolean disableDefaults) {
-//        super(disableDefaults);
-//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

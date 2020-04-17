@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout">
+      xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
     <title>Admin Home</title>
+
 </head>
+
 <body>
 <div class="container">
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -20,199 +20,178 @@
             <li class="nav-item">
                 <a class="nav-link" href="/">CRUD_demo Project</a>
             </li>
-            <li class="nav-item" >
+            <li class="nav-item">
                 <a class="nav-link" href="/logout">Logout</a>
             </li>
         </ul>
     </nav>
-    <h2>Admin panel</h2>
-
-    <br>
-    <!-- Nav pills -->
-    <ul class="nav nav-pills" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" data-toggle="pill" href="#usertable">User table</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="pill" href="#newuser">New User</a>
-        </li>
-    </ul>
 
 
-    <!-- Tab panes -->
-    <div class="tab-content">
-        <div id="usertable" class="container tab-pane active">
+    <div class="row" style="margin: 0">
+        <div class="col-sm-3" style="padding: 0">
+            <ul class="nav nav-pills" role="toolbar" style="flex-direction: column">
+                <li class="nav-item" style="display: block">
+                    <a class="nav-link active" data-toggle="pill" href="/admin/adminhome">Admin</a>
+                </li>
+                <li class="nav-item" style="display: block">
+                    <a class="nav-link" data-toggle="pill" href="/userhome">User</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-sm-9" style="background-color: whitesmoke">
+
+            <h2>Admin panel</h2>
+
             <br>
-            <h3>All Users</h3>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Password</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="user : ${users}">
-                    <td th:text="${user.id}"></td>
-                    <td th:text="${user.getName()}"></td>
-                    <td th:text="${user.lastName}"></td>
-                    <td th:text="${user.password}"></td>
-                    <td th:text="${user.email}"></td>
-                    <td th:each="role : ${user.getAuthorities()}">
-                        <p>
-                            <span th:text="${role.getAuthority()}">User</span>
-                        </p>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                            Edit
-                        </button>
-                        <a th:href="@{/admin/edit(id=${user.id})}" class="btn btn-info" role="button">Edit</a>
-                        <a th:href="@{/admin/delete(id=${user.id})}" class="btn btn-info" role="button">Delete</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div id="newuser" class="container tab-pane fade"><br>
-            <div class="container">
-                <h2>Add new user</h2>
-                <form action="/admin/insert" method="post">
-                    <div class="form-group">
-                        <label for="name">First Name:</label>
-                        <input type="name" class="form-control" id="name" placeholder="Enter First Name" name="name">
+            <!-- Nav pills -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#usertable">User table</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#newuser">New User</a>
+                </li>
+            </ul>
+
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div id="usertable" class="container tab-pane active">
+                    <br>
+                    <h3>All Users</h3>
+                    <table class="table table-striped" style="background-color: white">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="users_data">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="newuser" class="container tab-pane fade"><br>
+                    <div class="container">
+                        <h2>Add new user</h2>
+                        <form id="form-newuser" action="/admin/insert" method="post">
+                            <div class="form-group">
+                                <label for="new_user_name">First Name:</label>
+                                <input type="text" class="form-control" id="new_user_name"
+                                       placeholder="Enter First Name"
+                                       name="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="new_user_lastname">Last Name:</label>
+                                <input type="text" class="form-control" id="new_user_lastname"
+                                       placeholder="Enter Lastname"
+                                       name="lastname">
+                            </div>
+                            <div class="form-group">
+                                <label for="new_user_password">Password:</label>
+                                <input type="password" class="form-control" id="new_user_password"
+                                       placeholder="Enter password"
+                                       name="password">
+                            </div>
+                            <div class="form-group">
+                                <label for="new_user_email">Email:</label>
+                                <input type="email" class="form-control" id="new_user_email" placeholder="Enter email"
+                                       name="email">
+                            </div>
+                            <div class="form-group form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" name="user_new"
+                                           id="new_user_role_user"> User
+                                </label>
+                            </div>
+                            <div class="form-group form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" name="admin_new"
+                                           id="new_user_role_admin"> Admin
+                                </label>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="submit_new_user">Submit</button>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label for="lastname">Last Name:</label>
-                        <input type="lastname" class="form-control" id="lastname" placeholder="Enter Lastname" name="lastname">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password:</label>
-                        <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
-                    </div>
-                    <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" name="role_user"> User
-                        </label>
-                    </div>
-                    <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" name="role_admin"> Admin
-                        </label>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
+                </div>
             </div>
         </div>
+
+        <!-- The EDIT Modal -->
+        <div class="modal" id="editModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Edit User </h4>&nbsp;
+                        <h4 class="modal-title" id="current_user_id"></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form id="form-update" action="/admin/update" method="post">
+                            <div class="form-group">
+                                <label for="name_edit">First Name:</label>
+                                <input type="name" class="form-control" id="name_edit" placeholder="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="lastname_edit">Last Name:</label>
+                                <input type="lastname" class="form-control" id="lastname_edit" placeholder=""
+                                       name="lastname">
+                            </div>
+                            <div class="form-group">
+                                <label for="password_edit">Password:</label>
+                                <input type="password" class="form-control" id="password_edit"
+                                       placeholder="Enter password only if you want to change it" name="password">
+                            </div>
+                            <div class="form-group">
+                                <label for="email_edit">Email:</label>
+                                <input type="email" class="form-control" id="email_edit" placeholder="Enter email"
+                                       name="email">
+                            </div>
+                            <div class="form-group form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" name="role_user" id="user_edit">
+                                    User
+                                </label>
+                            </div>
+                            <div class="form-group form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" name="role_admin" id="admin_edit">
+                                    Admin
+                                </label>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="submit_edit_user">Submit</button>
+                        </form>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
     </div>
 </div>
 
+<script src="script.js"></script>
 
-<!-- The EDIT Modal -->
-<div class="modal" id="myModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Edit User</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-
-            <!-- Modal body -->
-            <div class="modal-body">
-                <form action="/admin/update" method="post">
-                    <div class="form-group">
-                        <label for="name">First Name:</label>
-                        <input type="name" class="form-control" id="name1" placeholder= name="name">
-                    </div>
-                    <div class="form-group">
-                        <label for="lastname">Last Name:</label>
-                        <input type="lastname" class="form-control" id="lastname1" placeholder="" name="lastname">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password:</label>
-                        <input type="password" class="form-control" id="password1" placeholder="Enter password" name="password">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" class="form-control" id="email1" placeholder="Enter email" name="email">
-                    </div>
-                    <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" name="role_user"> User
-                        </label>
-                    </div>
-                    <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" name="role_admin"> Admin
-                        </label>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
-
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
-
-<
-<!--<div layout:fragment="content">-->
-<!--    <p>-->
-<!--        Welcome <span th:text="${user.getUsername()}">User</span>-->
-<!--    </p>-->
-<!--    <a th:href="@{/logout}">Logout</a>-->
-<!--</div>-->
-
-<!--    &nbsp;&nbsp;&nbsp;-->
-<!--    <a href="adminhome">List All Users</a>-->
-<!--</h2>-->
-
-<!--    <table>-->
-<!--        <tr>-->
-<!--            <th>ID</th>-->
-<!--            <th>First Name</th>-->
-<!--            <th>Last Name</th>-->
-<!--            <th>Password</th>-->
-<!--            <th>Email</th>-->
-<!--            <th>Role</th>-->
-<!--            <th>Actions</th>-->
-<!--        </tr>-->
-<!--        <tr th:each="user : ${users}">-->
-<!--            <td th:text="${user.id}"></td>-->
-<!--            <td th:text="${user.getName()}"></td>-->
-<!--            <td th:text="${user.lastName}"></td>-->
-<!--            <td th:text="${user.password}"></td>-->
-<!--            <td th:text="${user.email}"></td>-->
-<!--            <td th:each="role : ${user.getAuthorities()}">-->
-<!--                <p>-->
-<!--                    <span th:text="${role.getAuthority()}">User</span>-->
-<!--                </p>-->
-<!--            </td>-->
-<!--            <td>-->
-<!--                <a th:href="@{/admin/edit(id=${user.id})}">Edit</a>-->
-<!--                <a th:href="@{/admin/delete(id=${user.id})}">Delete</a>-->
-<!--            </td>-->
-<!--        </tr>-->
-<!--    </table>-->
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
 </body>
 </html>
