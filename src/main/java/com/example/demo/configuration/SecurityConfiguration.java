@@ -36,6 +36,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").anonymous()
                 .antMatchers("/login").anonymous()
                 .antMatchers("/userhome").hasAuthority("USER")
+                .antMatchers("/userhome").hasAuthority("ADMIN")
                 .antMatchers("/admin/**").hasAuthority("ADMIN").anyRequest()
                 .authenticated()
                 .and()

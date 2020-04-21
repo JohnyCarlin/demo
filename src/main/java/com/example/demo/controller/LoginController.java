@@ -64,7 +64,6 @@ public class LoginController {
     }
 
 
-
 //    @RequestMapping(value = "/admin/new", method = RequestMethod.GET)
 //    public ModelAndView getNew(ModelAndView modelAndView) {
 //        User user = new User();
